@@ -2,6 +2,7 @@ package com.lightricks.feedexercise.ui.feed
 
 import androidx.lifecycle.*
 import com.lightricks.feedexercise.data.FeedItem
+import com.lightricks.feedexercise.data.FeedRepository
 import com.lightricks.feedexercise.util.Event
 import java.lang.IllegalArgumentException
 
@@ -11,6 +12,7 @@ import java.lang.IllegalArgumentException
 open class FeedViewModel : ViewModel() {
     private val stateInternal: MutableLiveData<State> = MutableLiveData<State>(DEFAULT_STATE)
     private val networkErrorEvent = MutableLiveData<Event<String>>()
+    private val feedRepository = FeedRepository()
 
     fun getIsLoading(): LiveData<Boolean> {
         //todo: fix the implementation
@@ -24,7 +26,7 @@ open class FeedViewModel : ViewModel() {
 
     fun getFeedItems(): LiveData<List<FeedItem>> {
         //todo: fix the implementation
-        return MutableLiveData()
+        return feedRepository.getFeed()
     }
 
     fun getNetworkErrorEvent(): LiveData<Event<String>> = networkErrorEvent
@@ -34,6 +36,7 @@ open class FeedViewModel : ViewModel() {
     }
 
     fun refresh() {
+        feedRepository.refresh()
         //todo: fix the implementation
     }
 
