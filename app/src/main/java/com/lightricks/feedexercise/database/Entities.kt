@@ -7,18 +7,13 @@ import androidx.room.PrimaryKey
 /**
  * todo: add Room's Entity data class(es) here
  */
-@Entity
-data class AllItemsEntity(
-    @ColumnInfo val templatesMetadata:List<ItemEntity>
-)
 
-@Entity
+@Entity(tableName = "items")
 data class ItemEntity(
-    @ColumnInfo val configuration: String,
+    val configuration: String,
     @PrimaryKey val id: String,
-    @ColumnInfo val isNew: Boolean,
-    @ColumnInfo val isPremium: Boolean,
-    @ColumnInfo val templateCategories: List<String>,
-    @ColumnInfo val templateName: String,
-    @ColumnInfo val templateThumbnailURI: String
+    val isNew: Boolean,
+    val isPremium: Boolean,
+    val templateName: String,
+    val templateThumbnailURI: String
 )

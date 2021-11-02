@@ -1,27 +1,27 @@
 package com.lightricks.feedexercise.database
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
-import io.reactivex.Completable
-import io.reactivex.Observable
+import androidx.room.*
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 
 /***
  * todo: add Room's Data Access Object interface(s) here
  */
 @Dao
-interface ItemsDataAccessObject{
-    @Insert
-    fun insertAll(entity :ItemEntity):Completable
+interface ItemDAO{
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(items: List<ItemEntity>): Completable
 
     @Delete
-    fun deleteAll():Completable
+    fun delete(item: ItemEntity):Completable
 
-    @Query("SELECT * FROM ItemEntity")
-    fun queryAll():Observable<List<ItemEntity>>
+    @Query("DELETE FROM items")
+    fun deleteAll()
 
-    @Query("SELECT count(*) FROM ItemEntity")
+    @Query("SELECT * FROM items")
+    fun getAll(): Observable<List<ItemEntity>>
+
+    @Query("SELECT count(*) FROM items")
     fun count(): Single<Int>
 }
