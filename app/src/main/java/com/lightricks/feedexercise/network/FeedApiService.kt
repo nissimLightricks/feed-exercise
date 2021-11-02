@@ -9,10 +9,6 @@ import io.reactivex.rxjava3.core.Single
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 
-
-/**
- * todo: add the FeedApiService interface and the Retrofit and Moshi code here
- */
 interface FeedApiService {
     @GET(FEED_QUERY)
     fun getFeed(): Single<FeedMetadataEntity>
@@ -21,11 +17,11 @@ interface FeedApiService {
         private const val FEED_QUERY = "feed.json"
         private const val BASE_URL = "https://assets.swishvideoapp.com/Android/demo/"
 
-        val moshi: Moshi = Moshi.Builder()
+        private val moshi: Moshi = Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
             .build()
 
-        val retrofit = Retrofit.Builder()
+        private val retrofit: Retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .addConverterFactory(MoshiConverterFactory.create(moshi))

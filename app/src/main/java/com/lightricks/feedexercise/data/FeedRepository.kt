@@ -1,7 +1,5 @@
 package com.lightricks.feedexercise.data
 
-import android.view.SurfaceControl
-import androidx.room.Transaction
 import com.lightricks.feedexercise.database.FeedDao
 import com.lightricks.feedexercise.database.ItemEntity
 import com.lightricks.feedexercise.network.FeedApiService
@@ -16,7 +14,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers
  */
 class FeedRepository(
     private val feedApiService: FeedApiService,
-    private val feedDao: FeedDao) {
+    private val feedDao: FeedDao
+) {
 
     fun getFeed(): Observable<List<FeedItem>> {
         return feedDao.getAll().map { it.toFeedItems() }
@@ -44,6 +43,7 @@ fun List<FeedItemEntity>.toFeedEntities(): List<ItemEntity> {
             isNew = it.isNew,
             isPremium = it.isPremium,
             templateName = it.templateName,
-            templateThumbnailURI = it.templateThumbnailURI)
+            templateThumbnailURI = it.templateThumbnailURI
+        )
     }
 }

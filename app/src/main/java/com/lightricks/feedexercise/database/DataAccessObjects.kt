@@ -5,9 +5,6 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 
-/***
- * todo: add Room's Data Access Object interface(s) here
- */
 @Dao
 abstract class FeedDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
