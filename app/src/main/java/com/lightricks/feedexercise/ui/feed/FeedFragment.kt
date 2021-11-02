@@ -10,11 +10,14 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_LONG
 import com.google.android.material.snackbar.Snackbar
 import com.lightricks.feedexercise.R
 import com.lightricks.feedexercise.data.FeedRepository
+import com.lightricks.feedexercise.database.FeedDatabase
 import com.lightricks.feedexercise.databinding.FeedFragmentBinding
+import com.lightricks.feedexercise.network.FeedApiService
 
 /**
  * This Fragment shows the feed grid. The feed consists of template thumbnail images.
@@ -27,9 +30,11 @@ class FeedFragment : Fragment() {
     private lateinit var viewModel: FeedViewModel
     private lateinit var feedAdapter: FeedAdapter
 
-    override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         dataBinding = DataBindingUtil.inflate(inflater, R.layout.feed_fragment, container, false)
         setupViewModel()
         setupViews()
@@ -37,7 +42,9 @@ class FeedFragment : Fragment() {
     }
 
     private fun setupViewModel() {
-        viewModel = ViewModelProvider(this, FeedViewModelFactory())
+        val feedRepository = setUpFeedRepository()
+
+        viewModel = ViewModelProvider(this, FeedViewModelFactory(feedRepository))
             .get(FeedViewModel::class.java)
 
         viewModel.getFeedItems().observe(viewLifecycleOwner, Observer { items ->
@@ -49,6 +56,16 @@ class FeedFragment : Fragment() {
             // only if there result of getContentIfNotHandled() is not null.
             event.getContentIfNotHandled()?.let { showNetworkError() }
         })
+    }
+
+    private fun setUpFeedRepository(): FeedRepository {
+        val roomDB = Room.databaseBuilder(
+            requireContext(),
+            FeedDatabase::class.java,
+            "database"
+        ).build()
+        val roomDao = roomDB.feedDao()
+        return FeedRepository(FeedApiService.feedApiService, roomDao)
     }
 
     private fun setupViews() {

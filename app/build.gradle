@@ -53,8 +53,11 @@ dependencies {
     kapt 'com.github.bumptech.glide:compiler:4.11.0'
     // Testing frameworks
     androidTestImplementation 'androidx.test:core:1.2.0'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.ext:truth:1.2.0'
+    androidTestImplementation 'androidx.arch.core:core-testing:2.1.0'
 
     // Retrofit HTTP client
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
@@ -66,7 +69,6 @@ dependencies {
     // RxJava for asynchronous programming
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
     implementation 'io.reactivex.rxjava3:rxjava:3.0.13'
-
     // Room persistence library
     implementation 'androidx.room:room-runtime:2.3.0'
     implementation 'androidx.room:room-rxjava3:2.3.0'

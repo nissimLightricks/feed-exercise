@@ -9,19 +9,30 @@ import io.reactivex.rxjava3.core.Single
  * todo: add Room's Data Access Object interface(s) here
  */
 @Dao
-interface ItemDAO{
+abstract class FeedDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(items: List<ItemEntity>): Completable
+    abstract fun insertAll(items: List<ItemEntity>)
 
     @Delete
-    fun delete(item: ItemEntity):Completable
+    abstract fun deleteAsync(item: ItemEntity): Completable
 
     @Query("DELETE FROM items")
-    fun deleteAll()
+    abstract fun deleteAll()
 
     @Query("SELECT * FROM items")
-    fun getAll(): Observable<List<ItemEntity>>
+    abstract fun getAll(): Observable<List<ItemEntity>>
 
     @Query("SELECT count(*) FROM items")
-    fun count(): Single<Int>
+    abstract fun count(): Single<Int>
+
+    @Transaction
+    open fun refreshDatabase(items: List<ItemEntity>){
+        deleteAll()
+        insertAll(items)
+    }
+
+    fun refreshDatabaseAsync(items: List<ItemEntity>) :Completable{
+        return Completable.fromAction{ refreshDatabase(items) }
+    }
+
 }

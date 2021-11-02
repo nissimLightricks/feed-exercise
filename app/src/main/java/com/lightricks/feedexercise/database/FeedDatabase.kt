@@ -8,5 +8,5 @@ import androidx.room.RoomDatabase
  */
 @Database(entities = [ItemEntity::class], version = 1)
 abstract class FeedDatabase : RoomDatabase() {
-    abstract fun itemDao(): ItemDAO
+    abstract fun feedDao(): FeedDao
 }
