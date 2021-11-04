@@ -8,11 +8,12 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import java.lang.IllegalArgumentException
+import java.util.function.Supplier
 
 /**
  * This view model manages the data for [FeedFragment].
  */
-open class FeedViewModel(private val feedRepository: FeedRepository) : ViewModel() {
+class FeedViewModel(private val feedRepository: FeedRepository) : ViewModel() {
     private val stateInternal: MutableLiveData<State> = MutableLiveData<State>(DEFAULT_STATE)
     private val networkErrorEvent = MutableLiveData<Event<String>>()
     private val compositeDisposable = CompositeDisposable()
@@ -89,13 +90,13 @@ open class FeedViewModel(private val feedRepository: FeedRepository) : ViewModel
  * It's not necessary to use this factory at this stage. But if we will need to inject
  * dependencies into [FeedViewModel] in the future, then this is the place to do it.
  */
-class FeedViewModelFactory(private val feedRepository: FeedRepository) : ViewModelProvider.Factory {
+class FeedViewModelFactory(private val feedRepository: Supplier<FeedRepository>) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (!modelClass.isAssignableFrom(FeedViewModel::class.java)) {
             throw IllegalArgumentException("factory used with a wrong class")
         }
         @Suppress("UNCHECKED_CAST")
-        return FeedViewModel(feedRepository) as T
+        return FeedViewModel(feedRepository.get()) as T
     }
 
 }

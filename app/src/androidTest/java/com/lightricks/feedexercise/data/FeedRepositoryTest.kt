@@ -27,7 +27,6 @@ import java.io.IOException
 
 @RunWith(MockitoJUnitRunner::class)
 class FeedRepositoryTest {
-    //todo: add the tests here
     @get:Rule
     val instantLiveData = InstantTaskExecutorRule()
 
@@ -47,6 +46,13 @@ class FeedRepositoryTest {
         repositoryToTest = FeedRepository(mockApiService, feedDao)
     }
 
+    private fun createDb() {
+        db = Room.inMemoryDatabaseBuilder(
+            context, FeedDatabase::class.java
+        ).build()
+        feedDao = db.feedDao()
+    }
+
     private fun createMockApiService() {
         val moshi: Moshi = Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
@@ -58,13 +64,6 @@ class FeedRepositoryTest {
         val feedMetadataEntity = adapter.fromJson(jsonString)
         `when`(mockApiService.getFeed())
             .thenReturn(Single.just(feedMetadataEntity))
-    }
-
-    private fun createDb() {
-        db = Room.inMemoryDatabaseBuilder(
-            context, FeedDatabase::class.java
-        ).build()
-        feedDao = db.feedDao()
     }
 
     @After

@@ -42,9 +42,7 @@ class FeedFragment : Fragment() {
     }
 
     private fun setupViewModel() {
-        val feedRepository = setUpFeedRepository()
-
-        viewModel = ViewModelProvider(this, FeedViewModelFactory(feedRepository))
+        viewModel = ViewModelProvider(this, FeedViewModelFactory { createFeedRepository() })
             .get(FeedViewModel::class.java)
 
         viewModel.getFeedItems().observe(viewLifecycleOwner, Observer { items ->
@@ -58,7 +56,7 @@ class FeedFragment : Fragment() {
         })
     }
 
-    private fun setUpFeedRepository(): FeedRepository {
+    private fun createFeedRepository(): FeedRepository {
         val roomDB = Room.databaseBuilder(
             requireContext(),
             FeedDatabase::class.java,
