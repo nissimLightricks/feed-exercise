@@ -2,7 +2,13 @@ package com.lightricks.feedexercise.ui.feed
 
 import androidx.lifecycle.*
 import com.lightricks.feedexercise.data.FeedItem
+import com.lightricks.feedexercise.network.FeedApiService
+import com.lightricks.feedexercise.network.FeedItemDtoList
 import com.lightricks.feedexercise.util.Event
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.Disposables
+import io.reactivex.schedulers.Schedulers
 import java.lang.IllegalArgumentException
 
 /**
@@ -12,19 +18,18 @@ open class FeedViewModel : ViewModel() {
     private val stateInternal: MutableLiveData<State> = MutableLiveData<State>(DEFAULT_STATE)
     private val networkErrorEvent = MutableLiveData<Event<String>>()
 
+    private var refreshTaskDisposable: Disposable = Disposables.empty()
+
     fun getIsLoading(): LiveData<Boolean> {
-        //todo: fix the implementation
-        return MutableLiveData()
+        return Transformations.map(stateInternal) { it.isLoading }
     }
 
     fun getIsEmpty(): LiveData<Boolean> {
-        //todo: fix the implementation
-        return MutableLiveData()
+        return Transformations.map(stateInternal) { it.feedItems?.isEmpty() ?: true }
     }
 
     fun getFeedItems(): LiveData<List<FeedItem>> {
-        //todo: fix the implementation
-        return MutableLiveData()
+        return Transformations.map(stateInternal) { it.feedItems ?: emptyList() }
     }
 
     fun getNetworkErrorEvent(): LiveData<Event<String>> = networkErrorEvent
@@ -34,7 +39,40 @@ open class FeedViewModel : ViewModel() {
     }
 
     fun refresh() {
-        //todo: fix the implementation
+        if (getState().isLoading) {
+            return
+        }
+        updateState { copy(isLoading = true) }
+        refreshTaskDisposable = FeedApiService.instance.getFeed()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ feedResponse ->
+                updateState {
+                    copy(
+                        feedItems = feedResponse.templatesMetadata.toFeedItems(),
+                        isLoading = false
+                    )
+                }
+            }, { error ->
+                updateState { copy(isLoading = false) }
+                networkErrorEvent.postValue(Event(error.message.toString()))
+            })
+    }
+
+    private fun List<FeedItemDtoList.Item>.toFeedItems(): List<FeedItem> {
+        return map { item: FeedItemDtoList.Item ->
+            FeedItem(
+                item.id,
+                FeedApiService.IMAGE_BASE_URL + item.templateThumbnailURI,
+                item.isPremium
+            )
+        }
+    }
+
+
+    override fun onCleared() {
+        super.onCleared()
+        refreshTaskDisposable.dispose()
     }
 
     private fun updateState(transform: State.() -> State) {
@@ -47,12 +85,15 @@ open class FeedViewModel : ViewModel() {
 
     data class State(
         val feedItems: List<FeedItem>?,
-        val isLoading: Boolean)
+        val isLoading: Boolean
+    )
 
     companion object {
         private val DEFAULT_STATE = State(
             feedItems = null,
-            isLoading = false)
+            isLoading = false
+        )
+
     }
 }
 
