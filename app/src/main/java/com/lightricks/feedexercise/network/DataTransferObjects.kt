@@ -17,3 +17,9 @@ data class TemplatesMetadataItem(
 data class TemplatesMetadata(
     val templatesMetadata : List<TemplatesMetadataItem>
 )
+
+object Constant{
+    const val BASE_THUMBNAIL_URL: String = "https://assets.swishvideoapp.com/Android/demo/catalog/thumbnails/"
+    const val BASE_URL =  "https://assets.swishvideoapp.com/"
+
+}

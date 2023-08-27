@@ -1,7 +1,9 @@
 package com.lightricks.feedexercise.ui.feed
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.*
 import com.lightricks.feedexercise.data.FeedItem
+import com.lightricks.feedexercise.network.Constant.BASE_THUMBNAIL_URL
 import com.lightricks.feedexercise.network.FeedApiResponseGenerator
 import com.lightricks.feedexercise.network.FeedApiService
 import com.lightricks.feedexercise.network.TemplatesMetadata
@@ -15,6 +17,7 @@ import java.lang.IllegalArgumentException
  * This view model manages the data for [FeedFragment].
  */
 open class FeedViewModel : ViewModel() {
+
     init {
         this.fetchFeedItems()
     }
@@ -49,7 +52,7 @@ open class FeedViewModel : ViewModel() {
         val rawResponseList = feedResponse.templatesMetadata
         var feedItemLst : MutableList<FeedItem> = mutableListOf()
         for(item in rawResponseList){
-            feedItemLst.add(FeedItem(item.id,"https://assets.swishvideoapp.com/Android/demo/catalog/thumbnails/" + item.templateThumbnailURI,item.isPremium))
+            feedItemLst.add(FeedItem(item.id, BASE_THUMBNAIL_URL + item.templateThumbnailURI,item.isPremium))
         }
         updateState{FeedViewModel.State(feedItemLst,false)}
     }
