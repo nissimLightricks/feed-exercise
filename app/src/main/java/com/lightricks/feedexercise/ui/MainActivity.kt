@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container_view,FeedFragment()).commit()
+            .replace(R.id.fragment_container_view, FeedFragment()).commit()
     }
 
 
