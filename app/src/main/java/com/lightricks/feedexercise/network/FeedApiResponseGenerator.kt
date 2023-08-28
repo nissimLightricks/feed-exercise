@@ -9,14 +9,17 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 object FeedApiResponseGenerator {
 
+    private val feedApiService : FeedApiService
 
     private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
-    val retrofit = Retrofit.Builder().baseUrl(BASE_URL)
+    private val retrofit = Retrofit.Builder().baseUrl(BASE_URL)
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).build()
-
+    init {
+        feedApiService = retrofit.create(FeedApiService::class.java)
+    }
     fun createFeedApiService() : FeedApiService {
-        return retrofit.create(FeedApiService::class.java)
+        return this.feedApiService
     }
 }
