@@ -54,7 +54,7 @@ open class FeedViewModel : ViewModel() {
         for(item in rawResponseList){
             feedItemLst.add(FeedItem(item.id, BASE_THUMBNAIL_URL + item.templateThumbnailURI,item.isPremium))
         }
-        updateState{FeedViewModel.State(feedItemLst,false)}
+        updateState { FeedViewModel.State(feedItemLst, false) }
     }
 
     fun getIsEmpty(): LiveData<Boolean> {
